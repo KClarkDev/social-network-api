@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
-const { User, Thought } = require("../models");
+const { Thought } = require("../models");
+
+console.log(Thought);
 
 module.exports = {
   // Get all thoughts
@@ -49,6 +51,31 @@ module.exports = {
       const thought = await Thought.create(req.body);
       res.json(thought);
     } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // Delete a thought
+  async deleteThought(req, res) {
+    try {
+      const thoughtId = req.params.thoughtId;
+
+      if (!mongoose.isValidObjectId(thoughtId)) {
+        return res.status(404).json({ message: "Invalid ID" });
+      }
+
+      const thought = await Thought.findOneAndRemove({
+        _id: req.params.thoughtId,
+      });
+
+      if (!thought) {
+        return res.status(404).json({ message: "No such thought exists" });
+      }
+
+      res.json({
+        message: "Thought successfully deleted",
+      });
+    } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },

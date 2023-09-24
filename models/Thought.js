@@ -1,5 +1,22 @@
 const { Schema, model } = require("mongoose");
 
+// Schema to create a reaction model
+const reactionSchema = new Schema({
+  reactionBody: {
+    type: String,
+    required: true,
+    maxlength: 280,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 // Schema to create a thought model
 const thoughtSchema = new Schema(
   {
@@ -13,6 +30,7 @@ const thoughtSchema = new Schema(
       type: Date,
       default: Date.now(),
     },
+    // the user that created the thought
     username: {
       type: String,
       required: true,
@@ -40,5 +58,6 @@ thoughtSchema.virtual("formattedCreationDate").get(function () {
 });
 
 const Thought = model("thought", thoughtSchema);
+// const Reaction = model("Reaction", reactionSchema);
 
 module.exports = Thought;

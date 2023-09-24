@@ -18,8 +18,8 @@ connection.once("open", async () => {
   // Create empty array to hold the users
   const users = [];
 
-  // Loop 20 times -- add users to the user array
-  for (let i = 0; i < 20; i++) {
+  // Loop 5 times -- add users to the user array
+  for (let i = 0; i < 5; i++) {
     const username = getRandomName();
     const email = username.split(" ")[0] + "@gmail.com";
 
