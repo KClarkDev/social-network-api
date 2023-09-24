@@ -1,19 +1,23 @@
 const { Schema, model } = require("mongoose");
+const validator = require("validator");
 
-// Schema to create a thought model
+// Schema to create a user model
 const userSchema = new Schema(
   {
     username: {
       type: String,
-      // unique
+      unique: true,
       required: true,
-      // trimmed
+      trim: true,
     },
     email: {
       type: String,
-      // unique
+      unique: true,
       required: true,
-      // must match a valid email address (look into Mongoose matching validation)
+      validate: {
+        validator: validator.isEmail, // Use validator.js to check if it's a valid email
+        message: "Invalid email address",
+      },
     },
     // Array of _id values referencing the Thought model
     thoughts: [
@@ -26,7 +30,7 @@ const userSchema = new Schema(
     friends: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Friend",
+        ref: "User",
       },
     ],
   },
@@ -38,7 +42,10 @@ const userSchema = new Schema(
   }
 );
 
-// TODO: Create a virtual called friendCount that retrieves the length of the user's friends array field on query.
+// Retrieves the length of the user's friends array field on query
+userSchema.virtual("friendCount").get(function () {
+  return this.friends.length;
+});
 
 const User = model("user", userSchema);
 

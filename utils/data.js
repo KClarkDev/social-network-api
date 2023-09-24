@@ -24,8 +24,6 @@ const names = [
   "Abdulkarem",
   "Smith",
   "Jones",
-  "Coollastname",
-  "enter_name_here",
   "Ze",
   "Zechariah",
   "Zeek",
@@ -74,25 +72,12 @@ const names = [
   "Parker",
 ];
 
-const appDescriptions = [
-  "Decision Tracker",
-  "Find My Phone",
-  "Learn Piano",
-  "Starbase Defender",
-  "Tower Defense",
-  "Monopoly Money Manager",
-  "Movie trailers",
-  "Hello world",
-  "Stupid Social Media App",
-  "Notes",
-  "Messages",
-  "Email",
-  "Compass",
-  "Firefox",
-  "Running app",
-  "Cooking app",
-  "Poker",
-  "Deliveries",
+const thoughts = [
+  "This is really cool!",
+  "To be, or not to be?",
+  "I do my best thinking at night when everyone else is sleeping. No interruptions. No noise. I like the feeling of being awake when no one else is.",
+  "Life is what happens when you're busy making other plans.",
+  "Life is not a problem to be solved, but a reality to be experienced.",
 ];
 
 // Get a random item given an array
@@ -102,17 +87,17 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomName = () =>
   `${getRandomArrItem(names)} ${getRandomArrItem(names)}`;
 
-//   // Function to generate random assignments that we can add to student object.
-//   const getRandomAssignments = (int) => {
-//     const results = [];
-//     for (let i = 0; i < int; i++) {
-//       results.push({
-//         assignmentName: getRandomArrItem(appDescriptions),
-//         score: Math.floor(Math.random() * (99 - 70 + 1) + 70),
-//       });
-//     }
-//     return results;
-//   };
+// Function to generate random assignments that we can add to student object.
+const getRandomThought = (int) => {
+  const results = [];
+  for (let i = 0; i < int; i++) {
+    results.push({
+      thoughtText: getRandomArrItem(thoughts),
+      score: Math.floor(Math.random() * (99 - 70 + 1) + 70),
+    });
+  }
+  return results;
+};
 
 // Export the functions for use in seed.js
-module.exports = { getRandomName };
+module.exports = { getRandomName, getRandomThought };

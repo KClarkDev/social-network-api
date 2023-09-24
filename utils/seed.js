@@ -7,6 +7,7 @@ connection.on("error", (err) => err);
 connection.once("open", async () => {
   console.log("connected");
 
+  // Drop User collection if it already exists
   let usersCheck = await connection.db
     .listCollections({ name: "users" })
     .toArray();
