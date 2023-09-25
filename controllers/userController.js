@@ -56,7 +56,7 @@ module.exports = {
   async updateUser(req, res) {
     try {
       const userId = req.params.userId;
-
+      console.log(userId);
       if (!mongoose.isValidObjectId(userId)) {
         return res.status(404).json({ message: "Invalid user ID" });
       }
@@ -70,6 +70,10 @@ module.exports = {
       if (!user) {
         return res.status(404).json({ message: "No such user exists" });
       }
+
+      res.json({
+        message: "User successfully updated",
+      });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);

@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
 const { Thought } = require("../models");
 
-console.log(Thought);
-
 module.exports = {
   // Get all thoughts
   async getThoughts(req, res) {
@@ -51,6 +49,33 @@ module.exports = {
       const thought = await Thought.create(req.body);
       res.json(thought);
     } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // Update a thought
+  async updateThought(req, res) {
+    try {
+      const thoughtId = req.params.thoughtId;
+      console.log(thoughtId);
+      if (!mongoose.isValidObjectId(thoughtId)) {
+        return res.status(404).json({ message: "Invalid ID" });
+      }
+
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { new: true }
+      );
+
+      if (!thought) {
+        return res.status(404).json({ message: "No such thought exists" });
+      }
+
+      res.json({
+        message: "Thought successfully updated",
+      });
+    } catch (err) {
+      console.log(err);
       res.status(500).json(err);
     }
   },
