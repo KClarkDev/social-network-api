@@ -36,12 +36,7 @@ const thoughtSchema = new Schema(
       required: true,
     },
     // Array of nested documents created with the reactionSchema
-    reactions: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Reaction",
-      },
-    ],
+    reactions: [reactionSchema],
   },
   {
     toJSON: {
@@ -57,7 +52,12 @@ thoughtSchema.virtual("formattedCreationDate").get(function () {
   return formattedDate;
 });
 
+// Virtual getter method to format the createdAt date
+reactionSchema.virtual("formattedCreationDate").get(function () {
+  const formattedDate = this.createdAt.toLocaleString();
+  return formattedDate;
+});
+
 const Thought = model("thought", thoughtSchema);
-// const Reaction = model("Reaction", reactionSchema);
 
 module.exports = Thought;

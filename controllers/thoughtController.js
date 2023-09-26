@@ -104,4 +104,54 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // Add a reaction
+  async addReaction(req, res) {
+    try {
+      const thoughtId = req.params.thoughtId;
+      const newReaction = req.body;
+
+      // Find the thought by ID
+      const thought = await Thought.findById(thoughtId);
+
+      if (!thought) {
+        return res.status(404).json({ message: "Thought not found" });
+      }
+
+      // Add the new reaction to the reactions array/subdocument
+      thought.reactions.push(newReaction);
+
+      // Save the user document to persist the changes
+      await thought.save();
+
+      res.status(201).json(thought);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  },
+  // Delete a reaction
+  async deleteReaction(req, res) {
+    try {
+      const reactionId = req.params.reactionId;
+
+      if (!mongoose.isValidObjectId(reactionId)) {
+        return res.status(404).json({ message: "Invalid ID" });
+      }
+
+      const reaction = await Reaction.findOneAndRemove({
+        _id: req.params.reactionId,
+      });
+
+      if (!thought) {
+        return res.status(404).json({ message: "No such thought exists" });
+      }
+
+      res.json({
+        message: "Thought successfully deleted",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
 };
