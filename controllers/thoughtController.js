@@ -47,6 +47,23 @@ module.exports = {
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
+
+      // Assuming you have some way to identify the user (e.g., username)
+      const username = req.body.username;
+
+      // Find the user by their username
+      const user = await User.findOne({ username });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Add the objectId of the thought to the user's thoughts array
+      user.thoughts.push(thought._id);
+
+      // Save the user document to persist the changes
+      await user.save();
+
       res.json(thought);
     } catch (err) {
       res.status(500).json(err);
