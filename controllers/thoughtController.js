@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
-const { Thought } = require("../models");
+const { Thought, User } = require("../models");
 
 module.exports = {
   // Get all thoughts
@@ -48,11 +48,12 @@ module.exports = {
     try {
       const thought = await Thought.create(req.body);
 
-      // Assuming you have some way to identify the user (e.g., username)
       const username = req.body.username;
 
       // Find the user by their username
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username }).catch((error) => {
+        console.error("Error finding user:", error);
+      });
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -155,16 +156,32 @@ module.exports = {
         return res.status(404).json({ message: "Invalid ID" });
       }
 
-      const reaction = await Reaction.findOneAndRemove({
-        _id: req.params.reactionId,
-      });
+      const thoughtId = req.params.thoughtId;
+
+      // Find the thought by ID
+      const thought = await Thought.findById(thoughtId);
 
       if (!thought) {
-        return res.status(404).json({ message: "No such thought exists" });
+        return res.status(404).json({ message: "Thought not found" });
       }
 
+      // Find the index of the reaction within the thought's reactions array
+      const reactionIndex = thought.reactions.findIndex(
+        (reaction) => reaction._id.toString() === reactionId
+      );
+
+      if (reactionIndex === -1) {
+        return res.status(404).json({ message: "No such reaction exists" });
+      }
+
+      // Remove the reaction from the thought's reactions array
+      thought.reactions.splice(reactionIndex, 1);
+
+      // Save the thought document to persist the changes
+      await thought.save();
+
       res.json({
-        message: "Thought successfully deleted",
+        message: "Reaction successfully deleted",
       });
     } catch (err) {
       console.log(err);
