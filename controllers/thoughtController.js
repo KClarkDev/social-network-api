@@ -171,7 +171,7 @@ module.exports = {
       );
 
       if (reactionIndex === -1) {
-        return res.status(404).json({ message: "No such reaction exists" });
+        return res.status(404).json({ message: "Reaction not found" });
       }
 
       // Remove the reaction from the thought's reactions array

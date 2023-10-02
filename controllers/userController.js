@@ -113,4 +113,70 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // Add a friend
+  async addFriend(req, res) {
+    try {
+      const userId = req.params.userId;
+      const newFriend = req.body;
+
+      // Find the user by ID
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Add the new friend to the user's friend list
+      user.friends.push(newFriend);
+
+      // Save the user document to persist the changes
+      await user.save();
+
+      res.status(201).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  },
+  // Remove a friend
+  async removeFriend(req, res) {
+    try {
+      const friendId = req.params.friendId;
+
+      if (!mongoose.isValidObjectId(friendId)) {
+        return res.status(404).json({ message: "Invalid ID" });
+      }
+
+      const userId = req.params.userId;
+
+      // Find the thought by ID
+      const user = await Thought.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Find the index of the friend within the user's friend list
+      const friendIndex = user.friends.findIndex(
+        (friend) => friend._id.toString() === friendId
+      );
+
+      if (friendIndex === -1) {
+        return res.status(404).json({ message: "Friend not found" });
+      }
+
+      // Remove the friend from the user's friend list
+      user.friends.splice(friendIndex, 1);
+
+      // Save the user document to persist the changes
+      await user.save();
+
+      res.json({
+        message: "Friend successfully removed",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
 };
