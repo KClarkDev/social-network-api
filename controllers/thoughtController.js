@@ -74,7 +74,6 @@ module.exports = {
   async updateThought(req, res) {
     try {
       const thoughtId = req.params.thoughtId;
-      console.log(thoughtId);
       if (!mongoose.isValidObjectId(thoughtId)) {
         return res.status(404).json({ message: "Invalid ID" });
       }
@@ -106,12 +105,21 @@ module.exports = {
         return res.status(404).json({ message: "Invalid ID" });
       }
 
+      // Find the Thought document to delete
       const thought = await Thought.findOneAndRemove({
         _id: req.params.thoughtId,
       });
 
       if (!thought) {
         return res.status(404).json({ message: "No such thought exists" });
+      }
+
+      // Remove the reference to the deleted thought from the User
+      const user = await User.findOne({ thoughts: thought._id });
+
+      if (user) {
+        user.thoughts.pull(thought._id); // Remove the reference
+        await user.save();
       }
 
       res.json({

@@ -117,7 +117,7 @@ module.exports = {
   async addFriend(req, res) {
     try {
       const userId = req.params.userId;
-      const newFriend = req.body;
+      const { friendId } = req.body;
 
       // Find the user by ID
       const user = await User.findById(userId);
@@ -127,7 +127,7 @@ module.exports = {
       }
 
       // Add the new friend to the user's friend list
-      user.friends.push(newFriend);
+      user.friends.push(friendId);
 
       // Save the user document to persist the changes
       await user.save();
@@ -142,6 +142,7 @@ module.exports = {
   async removeFriend(req, res) {
     try {
       const friendId = req.params.friendId;
+      console.log(friendId);
 
       if (!mongoose.isValidObjectId(friendId)) {
         return res.status(404).json({ message: "Invalid ID" });
@@ -150,7 +151,8 @@ module.exports = {
       const userId = req.params.userId;
 
       // Find the thought by ID
-      const user = await Thought.findById(userId);
+      const user = await User.findById(userId);
+      console.log(user);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
